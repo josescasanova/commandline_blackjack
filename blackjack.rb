@@ -1,16 +1,3 @@
-## Blackjack game Steps
-## 1. Ask player their name, save it.
-## 2. Are you ready to play? Your initial bank roll is $X.
-## 3. Place your bet
-## 3.5. Define deck of cards method, shuffle.
-## 4. Deal 4 random cards, two dealer + two gamer
-# 5. Gamer goes first on hitting/staying
-# 6. If 21, blackjack.. if over, bust
-# 7. Dealer: if under 17, must hit
-# 8. Compare dealer + gamer if they both staying
-# 9. Declare winner, +/- bankroll
-# 10. if bankroll 0 you lose
-# 11. ask if you want to play again or exit
 
 def calculate_total(cards)
   arr = cards.map{|e| e[1] }
@@ -46,16 +33,23 @@ suits.each do |suit|
   end
 end
 
+deck = deck * 5
+deck = deck.shuffle
 deck = deck.shuffle
 
-puts "Welcome to BlackJack!"
-# puts "Hey there, welcome to Blackhack! What is your name?"
-# name = gets.chomp.capitalize
+puts "Welcome to BlackJack! What is your name?"
+name = gets.chomp.capitalize
+puts "Hey #{name}, lets play some BlackJack. Your starting bankroll is $1,000."
+bankroll = 1000
+game_over = false
+puts ""
 
-# puts "Hey #{name}, lets play some BlackJack. Your starting bankroll is $1,000. Place your bet:"
-# bet = gets.chomp
-# bankroll = 1000
-# puts "#{name} is placing a bet of #{bankroll}."
+while true
+  puts "Bankroll: #{bankroll}"
+  puts "How much would you like to bet?"
+  bet = gets.chomp
+  bet = bet.to_i
+  puts ""
 
 mycards = []
 dealercards = []
@@ -73,12 +67,15 @@ puts "You have: #{mycards[0]} and #{mycards[1]}, for a total of #{mytotal}"
 puts ""
 
 if mytotal == 21
-  puts "Congrats, you got BlackJack! You win!"
-  exit
+  puts "Congrats #{name}, you got BlackJack! You win #{bet}!"
+  bankroll = bankroll + bet
+  puts bankroll
+  game_over = true
+  next
 end
 
 while mytotal < 21
-  puts "What would you like to do? 1) hit 2) stay"
+  puts "What would you like to do, #{name}? 1) hit 2) stay"
   hit_or_stay = gets.chomp
 
   if !['1', '2'].include?(hit_or_stay)
@@ -93,37 +90,51 @@ while mytotal < 21
 
   # Hit
   new_card = deck.pop
-  puts "Dealing card to player: #{new_card}"
+  puts "Dealing card to #{name}: #{new_card}"
   mycards << new_card
   mytotal = calculate_total(mycards)
   puts "Your total is now: #{mytotal}"
 
   if mytotal == 21
-    puts "Congrats, you hit BlackJack! You win!"
-    exit
+    puts "Congrats #{name}, you hit BlackJack! You win #{bet}!"
+    bankroll = bankroll + bet
+    puts bankroll
+    game_over = true
+    next
   elsif mytotal > 21
-    puts "Sorry, looks like you busted!"
-    exit
+    puts "Sorry #{name}, looks like you busted! You lost #{bet}."
+    bankroll = bankroll - bet
+    puts bankroll
+    game_over = true
+    next
   end
 end
 
 if dealertotal == 21
-  puts "Sorry, dealer hit blackjack. You lose."
-  exit
+  puts "Sorry, dealer hit blackjack. You lost #{bet}."
+  bankroll = bankroll - bet
+  puts bankroll
+  game_over = true
+  next
 end
 
 while dealertotal < 17
   new_card = deck.pop
-  puts "Dealing new car for dealer: #{new_card}"
+  puts "Dealing new card for dealer: #{new_card}"
   dealercards << new_card
   dealertotal = calculate_total(dealercards)
   puts "Dealer total is now: #{dealertotal}"
 
   if dealertotal == 21
-    puts "Sorry, dealer hit BlackJack. You lose."
+    puts "Sorry #{name}, dealer hit BlackJack. You lost #{bet}"
+    bankroll = bankroll - bet
+    puts bankroll
   elsif dealertotal > 21
-    puts "Congrats, dealer busted! You win!"
-    exit
+    puts "Congrats #{name}, dealer busted! You win #{bet}!"
+    bankroll = bankroll + bet
+    puts bankroll
+    game_over = true
+    next
   end
 end
 
@@ -141,18 +152,35 @@ mycards.each do |card|
 end
 puts ""
 
-if dealertotal > mytotal
-  puts "Sorry, dealer won."
-elsif dealertotal < mytotal
-  puts "Congrats, you win!"
-else
-  puts "It's a tie!"
+if game_over == false
+  if dealertotal > mytotal
+    puts "Sorry #{name}, dealer won. You lost #{bet}"
+    bankroll = bankroll - bet
+    puts bankroll
+  elsif dealertotal < mytotal
+    puts "Congrats #{name}, you win #{bet}!"
+    bankroll = bankroll + bet
+    puts bankroll
+  else
+    puts "It's a tie!"
+  end
 end
 
+# Play again?
+puts "Would you like to play again?."
+play_again = gets.chomp.downcase
 
+if !['yes', 'no'].include?(play_again)
+  puts "Error: you must enter yes or no"
+  next
+end
 
-
-
-
+if play_again == "yes"
+  game_over = false
+  next
+else play_again == "no"
+  exit
+end
+end
 
 

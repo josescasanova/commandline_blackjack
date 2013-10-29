@@ -1,3 +1,4 @@
+# initial try, used instructional solutions video in a big way
 
 def calculate_total(cards)
   arr = cards.map{|e| e[1] }
@@ -134,7 +135,7 @@ while dealertotal < 17
     bankroll = bankroll + bet
     puts bankroll
     game_over = true
-    next
+    
   end
 end
 

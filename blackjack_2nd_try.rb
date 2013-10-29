@@ -1,3 +1,6 @@
+# Built blackjack game w/out instructional video.
+# Did use help from blackjack.rb though.
+
 def card_total(cards)
   array = cards.map {|e| e[1]}
   total = 0

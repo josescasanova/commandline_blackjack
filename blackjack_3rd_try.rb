@@ -72,25 +72,56 @@ mytotal = calculated_total(mycards)
 puts "Dealer has #{dealercards} for a total of #{dealertotal}"
 puts "You have #{mycards} for a total of #{mytotal}"
 puts ''
-puts 'Would you like to 1) Hit or 2) Stay?'
-hit_or_stay = gets.chomp
 
-if hit_or_stay == '1'
+while mytotal < 21
+  puts 'Would you like to 1) Hit or 2) Stay?'
+  hit_or_stay = gets.chomp
 
-elsif hit_or_stay == '2'
-  
-else
-  puts 'You must pick 1 or 2.'
+  if hit_or_stay == '1'
+    mycards << deck.pop
+    mytotal = calculated_total(mycards)
+    puts "You now have #{mycards} for a total of #{mytotal}"
+    next
+  elsif hit_or_stay == '2'
+    puts 'You chose to stay.'
+    break
+  else
+    puts 'You must pick 1 or 2.'
+  end
 end
 
+if mytotal > 21
+  puts 'Sorry, you busted! Dealer wins!'
+  exit
+end
 
+while dealertotal < 17
+  dealercards << deck.pop
+  dealertotal = calculated_total(dealercards)
+  puts ''
+  puts 'Dealer hits!'
+  puts "Dealer has #{dealercards} for a total of #{dealertotal}"
+end
 
+if dealertotal > 21
+  puts 'Dealer busted, you win!'
+  exit
+end
 
+if dealertotal > mytotal
+  puts 'Dealer wins!'
+  exit
+end
 
+if dealertotal < mytotal
+  puts 'You win!'
+  exit
+end
 
-
-
-
+if dealertotal == mytotal
+  puts 'You guys tie!'
+  exit
+end
 
 
 

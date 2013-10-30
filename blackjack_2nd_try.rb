@@ -30,11 +30,13 @@ def card_total(cards)
     elsif x == "K"
       total = total + 10
     else x == "A"
-      if total > 21
-        total = total + 1
-      else
-        total = total + 11
-      end
+      total = total + 11
+    end
+  end
+
+  array.select{|e| e == "A"}.count.times do
+    if total > 21
+      total -= 10 
     end
   end
   total
@@ -76,16 +78,6 @@ if mytotal.to_i && dealertotal.to_i == 21
   exit
 end
 
-if dealertotal.to_i == 21
-  puts "Dealer won, you lost.. sorry"
-  exit
-end
-
-if mytotal.to_i == 21
-  puts "You won! Congrats"
-  exit
-end
-
 while mytotal < 21
   puts "Would you like to 1) hit or 2) stay?"
   hit_or_stay = gets.chomp
@@ -110,7 +102,7 @@ while mytotal < 21
   end
 end
 
-while dealertotal < 17
+while dealertotal < 17 || dealertotal < mytotal
   puts "Dealer Hits"
   dealercards << deck.pop
   dealertotal = card_total(dealercards)
@@ -120,7 +112,6 @@ while dealertotal < 17
     exit
   end
   puts "Dealer has #{dealercards} for a total of: #{dealertotal}"
-  exit
 end
 
 if dealertotal > mytotal

@@ -55,74 +55,105 @@ end
 deck = deck * 5
 deck.shuffle!
 
-puts '=> Welcome to BlackJack <='
+puts 'Welcome to BlackJack, what is your name?'
+name = gets.chomp.capitalize!
 puts ''
+game_over = false
+bankroll = 1000
 
-dealercards = []
-mycards = []
+while true
+  while game_over == false
+    dealercards = []
+    mycards = []
 
-mycards << deck.pop
-dealercards << deck.pop
-mycards << deck.pop
-dealercards << deck.pop
-
-dealertotal = calculated_total(dealercards)
-mytotal = calculated_total(mycards)
-
-puts "Dealer has #{dealercards} for a total of #{dealertotal}"
-puts "You have #{mycards} for a total of #{mytotal}"
-puts ''
-
-while mytotal < 21
-  puts 'Would you like to 1) Hit or 2) Stay?'
-  hit_or_stay = gets.chomp
-
-  if hit_or_stay == '1'
     mycards << deck.pop
+    dealercards << deck.pop
+    mycards << deck.pop
+    dealercards << deck.pop
+
+    dealertotal = calculated_total(dealercards)
     mytotal = calculated_total(mycards)
-    puts "You now have #{mycards} for a total of #{mytotal}"
-    next
-  elsif hit_or_stay == '2'
-    puts 'You chose to stay.'
-    break
-  else
-    puts 'You must pick 1 or 2.'
+
+    puts "You have a bankroll of #{bankroll}, how much would you like to bet, #{name}?"
+    bet = gets.chomp.to_i
+    puts "Dealer has #{dealercards} for a total of #{dealertotal}"
+    puts "You have #{mycards} for a total of #{mytotal}"
+    puts ''
+
+    while mytotal < 21
+      puts "Would you like to 1) Hit or 2) Stay, #{name}?"
+      hit_or_stay = gets.chomp
+
+      if hit_or_stay == '1'
+        mycards << deck.pop
+        mytotal = calculated_total(mycards)
+        puts "You now have #{mycards} for a total of #{mytotal}"
+      elsif hit_or_stay == '2'
+        puts 'You chose to stay.'
+        break
+      else
+        puts 'You must pick 1 or 2.'
+      end
+    end
+
+    if mytotal > 21
+      puts "Sorry #{name}, you busted! Dealer wins!"
+      bankroll = bankroll - bet
+      break
+    end
+
+    while (dealertotal < 17) || (dealertotal < mytotal)
+      dealercards << deck.pop
+      dealertotal = calculated_total(dealercards)
+      puts ''
+      puts 'Dealer hits!'
+      puts ''
+      puts "Dealer has #{dealercards} for a total of #{dealertotal}"
+    end
+
+    if dealertotal > 21
+      puts "Dealer busted, you win! Congrats #{name}!"
+      bankroll = bankroll + bet
+      break
+    end
+
+    if dealertotal > mytotal
+      puts "Dealer wins! Better luck next time, #{name}"
+      bankroll = bankroll - bet
+      break
+    end
+
+    if dealertotal < mytotal
+      puts "You win! Congrats #{name}!"
+      bankroll = bankroll + bet
+      break
+    end
+
+    if dealertotal == mytotal
+      puts 'You guys tie!'
+      break
+    end
   end
+
+  if bankroll < 0
+    puts "Sorry #{name}, you ran out of cash! Game over!"
+    game_over = true
+    exit
+  end
+
+  puts "Would you like to play again, #{name}? 1) yes 2) no"
+  play_again = gets.chomp
+  play_again.downcase!
+
+  if play_again == '1'
+    game_over = false
+  elsif play_again == '2'
+    game_over = true
+    exit
+  else
+    puts 'You must use 1 for yes or 2 for no.'
+  end
+
 end
-
-if mytotal > 21
-  puts 'Sorry, you busted! Dealer wins!'
-  exit
-end
-
-while dealertotal < 17
-  dealercards << deck.pop
-  dealertotal = calculated_total(dealercards)
-  puts ''
-  puts 'Dealer hits!'
-  puts "Dealer has #{dealercards} for a total of #{dealertotal}"
-end
-
-if dealertotal > 21
-  puts 'Dealer busted, you win!'
-  exit
-end
-
-if dealertotal > mytotal
-  puts 'Dealer wins!'
-  exit
-end
-
-if dealertotal < mytotal
-  puts 'You win!'
-  exit
-end
-
-if dealertotal == mytotal
-  puts 'You guys tie!'
-  exit
-end
-
-
 
 
